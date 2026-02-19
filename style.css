@@ -79,6 +79,12 @@
             margin-bottom: 20px;
         }
 
+        .btns-group{
+            width: 100%;
+            margin: 30px 0px;
+            margin-bottom: 50px;
+        }
+
         .input-group {
             background: #f9fafb;
             padding: 15px;
@@ -263,7 +269,16 @@
         .btn-sortear:hover { background: #1d4ed8; }
         .btn-print { background: #16a34a; color: white; transition: 0.2s; }
         .btn-print:hover { background: #15803d; }
-        .btn-limpar { background: #dc2626; color: white; transition: 0.2s; }
+        .btn-print:disabled {
+            background: #9ca3af;
+            color: #e5e7eb;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .btn-print:disabled:hover {
+            background: #9ca3af;
+        }
+        .btn-limpar { background: #dc2626; color: white; transition: 0.2s; display: none; }
         .btn-limpar:hover { background: #b91c1c; }
         .btn-print-resultado { background: #9333ea; color: white; }
 
@@ -598,6 +613,7 @@
                 padding: 0;
                 margin: 0;
                 height: auto;
+                line-height: 1;
             }
 
             body * { 
@@ -616,6 +632,8 @@
                 height: auto;
                 page-break-after: avoid;
                 page-break-inside: avoid;
+                top: 0;
+                left: 0;
             }
 
             .container {
@@ -628,32 +646,39 @@
 
             h1 {
                 display: none;
+                margin: 0;
+                padding: 0;
             }
 
             #printArea h2 {
                 page-break-after: avoid;
                 page-break-inside: avoid;
-                margin: 0 0 8px 0;
+                margin: 0 0 4px 0;
+                padding: 0;
                 font-size: 16px;
                 font-weight: bold;
+                line-height: 1.2;
             }
 
             #printArea h3 {
                 page-break-after: avoid;
                 page-break-inside: avoid;
-                margin: 8px 0 4px 0;
+                margin: 4px 0 2px 0;
+                padding: 0;
                 font-size: 14px;
                 font-weight: bold;
+                line-height: 1.2;
             }
 
             table {
                 page-break-inside: avoid;
                 width: 100%;
                 border-collapse: collapse;
-                margin-bottom: 0;
-                margin-top: 0;
+                margin: 0;
+                padding: 0;
                 font-size: 12px;
                 table-layout: fixed;
+                margin-bottom: 6px;
             }
 
             thead {
@@ -668,27 +693,33 @@
             tr {
                 page-break-inside: avoid;
                 height: auto;
+                margin: 0;
+                padding: 0;
             }
 
             th, td {
                 border: 1px solid #000;
-                padding: 4px;
+                padding: 3px 2px;
                 text-align: center;
-                font-size: 12px;
-                line-height: 1.2;
+                font-size: 11px;
+                line-height: 1.1;
                 word-wrap: break-word;
                 overflow-wrap: break-word;
+                margin: 0;
             }
 
             th {
                 background: #2563eb;
                 color: white;
+                padding: 3px 2px;
             }
 
             .info-sorteio {
                 page-break-after: avoid;
                 font-size: 10px;
-                margin-bottom: 4px;
+                margin: 0 0 2px 0;
+                padding: 0;
+                line-height: 1.2;
             }
 
             #feedback, .grid, button, .input-container, .input-group, footer.footer, .btn-contato-flutuante, .modal-contato {

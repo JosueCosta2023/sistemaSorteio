@@ -21,6 +21,7 @@ const dados = {
 };
 
 let tipoDiaAtual = 'util'; // 'util' ou 'feriado'
+let temSorteioRealizado = false; // Controla se há dados sorteados
 
 console.log('🟢 Script.js carregado! Objeto dados inicializado:', dados);
 console.log('Tipo de dados:', typeof dados);
@@ -165,6 +166,7 @@ function salvarDadosNoStorage() {
         timestamp: Date.now()
     };
     localStorage.setItem('sorteio_dados', JSON.stringify(dadosComTimestamp));
+    atualizarVisibilidadeBotaoLimpar(); // Atualiza visibilidade do botão
 }
 
 function restaurarDadosDoStorage() {
@@ -224,7 +226,13 @@ function limparDados() {
     renderizarLista('pdvsGeral');
 
     localStorage.removeItem('sorteio_dados');
-    exibirFeedback('🗑️ Dados limpos com sucesso!', 'sucesso');
+    desabilitarBotaoImprimir();
+    exibirFeedback('🗑️ Dados limpos com sucesso! Recarregando página...', 'sucesso');
+    
+    // Recarrega a página após 1.5 segundos
+    setTimeout(() => {
+        location.reload();
+    }, 1500);
 }
 
 function preencherTabela(tabelaId, pdvs, operadores) {
@@ -358,6 +366,7 @@ function sortearDiaUtil() {
 
         document.getElementById('loading').classList.remove('ativo');
         document.getElementById('printArea').classList.add('visivel');
+        habilitarBotaoImprimir();
         btnSortear.disabled = false;
         contadorElement.textContent = '5';
     }, 5000);
@@ -419,15 +428,51 @@ function sortearFeriado() {
 
         document.getElementById('loading').classList.remove('ativo');
         document.getElementById('printArea').classList.add('visivel');
+        habilitarBotaoImprimir();
         btnSortear.disabled = false;
         contadorElement.textContent = '5';
     }, 5000);
 }
 
 function imprimirResultado() {
+    if (!temSorteioRealizado) {
+        exibirFeedback('❌ Realize um sorteio antes de imprimir!', 'erro');
+        return;
+    }
     window.print();
 }
 
+
+// ===== CONTROLAR BOTÃO DE IMPRESSÃO =====
+function habilitarBotaoImprimir() {
+    temSorteioRealizado = true;
+    const btnPrint = document.querySelector('.btn-print');
+    btnPrint.disabled = false;
+    btnPrint.style.opacity = '1';
+    btnPrint.style.cursor = 'pointer';
+}
+
+function desabilitarBotaoImprimir() {
+    temSorteioRealizado = false;
+    const btnPrint = document.querySelector('.btn-print');
+    btnPrint.disabled = true;
+    btnPrint.style.opacity = '0.5';
+    btnPrint.style.cursor = 'not-allowed';
+}
+
+// ===== CONTROLAR VISIBILIDADE BOTÃO LIMPAR =====
+function atualizarVisibilidadeBotaoLimpar() {
+    const btnLimpar = document.querySelector('.btn-limpar');
+    const temDados = localStorage.getItem('sorteio_dados') !== null;
+    
+    if (temDados) {
+        btnLimpar.style.display = 'inline-block';
+        btnLimpar.style.visibility = 'visible';
+    } else {
+        btnLimpar.style.display = 'none';
+        btnLimpar.style.visibility = 'hidden';
+    }
+}
 
 // ===== ALTERNAR TIPO DE DIA =====
 function alternarTipoDia(tipo) {
@@ -479,9 +524,12 @@ function fecharContatoAoClicarFora() {
 // Restaura dados ao carregar a página
 window.addEventListener('DOMContentLoaded', () => {
     console.log('Página carregada, restaurando dados...');
+    desabilitarBotaoImprimir(); // Desabilita o botão por padrão
+    atualizarVisibilidadeBotaoLimpar(); // Verifica visibilidade do botão limpar
     const dadosRestaurados = restaurarDadosDoStorage();
     if (dadosRestaurados) {
         exibirFeedback('📂 Dados recuperados do armazenamento (válido por 1 hora)', 'sucesso');
+        atualizarVisibilidadeBotaoLimpar(); // Mostra o botão se houver dados
     }
     fecharContatoAoClicarFora();
 });
