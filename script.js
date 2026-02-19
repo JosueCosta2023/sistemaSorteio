@@ -344,6 +344,33 @@ function imprimirResultado() {
 }
 
 
+// ===== FUNÇÕES DE CONTATO =====
+function abrirContato() {
+    const modal = document.getElementById('modalContato');
+    modal.classList.add('ativo');
+}
+
+function fecharContato() {
+    const modal = document.getElementById('modalContato');
+    modal.classList.remove('ativo');
+}
+
+function fecharContatoAoClicarFora() {
+    const modal = document.getElementById('modalContato');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                fecharContato();
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                fecharContato();
+            }
+        });
+    }
+}
+
 // Restaura dados ao carregar a página
 window.addEventListener('DOMContentLoaded', () => {
     console.log('Página carregada, restaurando dados...');
@@ -351,4 +378,5 @@ window.addEventListener('DOMContentLoaded', () => {
     if (dadosRestaurados) {
         exibirFeedback('📂 Dados recuperados do armazenamento (válido por 1 hora)', 'sucesso');
     }
+    fecharContatoAoClicarFora();
 });

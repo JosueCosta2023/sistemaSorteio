@@ -377,6 +377,178 @@
             color: white;
         }
 
+        footer.footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea42 0%, #764ba25b 100%);
+            color: white;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        footer.footer p {
+            margin: 0;
+        }
+
+        footer.footer strong {
+            font-weight: 700;
+        }
+
+        /* BOTÃO FLUTUANTE CONTATO */
+        .btn-contato-flutuante {
+            position: fixed;
+            bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .btn-contato-flutuante:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-contato-flutuante:active {
+            transform: scale(0.95);
+        }
+
+        /* MODAL CONTATO */
+        .modal-contato {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-contato.ativo {
+            display: flex;
+        }
+
+        .modal-contato-conteudo {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-fechar-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            transition: 0.2s;
+            padding: 5px;
+        }
+
+        .btn-fechar-modal:hover {
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        .modal-contato-conteudo h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .modal-contato-conteudo p {
+            margin: 0 0 20px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .contato-opcoes {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .contato-link {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .contato-link i {
+            font-size: 32px;
+        }
+
+        .contato-link .texto {
+            text-align: center;
+        }
+
+        .contato-link.whatsapp {
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+        }
+
+        .contato-link.whatsapp:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+        }
+
+        .contato-link.linkedin {
+            background: linear-gradient(135deg, #0a66c2 0%, #0050b3 100%);
+            color: white;
+        }
+
+        .contato-link.linkedin:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(10, 102, 194, 0.3);
+        }
+
         @media print {
             * {
                 margin: 0;
@@ -477,13 +649,40 @@
                 margin-bottom: 4px;
             }
 
-            #feedback, .grid, button, .input-container, .input-group {
+            #feedback, .grid, button, .input-container, .input-group, footer.footer, .btn-contato-flutuante, .modal-contato {
                 display: none !important;
             }
         }
 
         /* ===== RESPONSIVIDADE MOBILE ===== */
         @media (max-width: 768px) {
+            .btn-contato-flutuante {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+            }
+
+            .modal-contato-conteudo {
+                width: 95%;
+                padding: 25px;
+            }
+
+            .modal-contato-conteudo h3 {
+                font-size: 18px;
+            }
+
+            .contato-link {
+                min-width: 110px;
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            .contato-link .icone {
+                font-size: 28px;
+            }
+
             body {
                 padding: 10px;
             }
