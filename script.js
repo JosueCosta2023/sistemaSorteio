@@ -15,8 +15,12 @@ const dados = {
     aberturaOps: [],
     fechamentoOps: [],
     aberturaPdvs: [],
-    fechamentoPdvs: []
+    fechamentoPdvs: [],
+    operadoresGeral: [],
+    pdvsGeral: []
 };
+
+let tipoDiaAtual = 'util'; // 'util' ou 'feriado'
 
 console.log('🟢 Script.js carregado! Objeto dados inicializado:', dados);
 console.log('Tipo de dados:', typeof dados);
@@ -42,7 +46,9 @@ function adicionarItem(event, tipo) {
         'aberturaOps': 'inputAberturaOps',
         'fechamentoOps': 'inputFechamentoOps',
         'aberturaPdvs': 'inputAberturaPdvs',
-        'fechamentoPdvs': 'inputFechamentoPdvs'
+        'fechamentoPdvs': 'inputFechamentoPdvs',
+        'operadoresGeral': 'inputOperadoresGeral',
+        'pdvsGeral': 'inputPdvsGeral'
     };
 
     const inputId = mapaTipos[tipo];
@@ -175,12 +181,16 @@ function restaurarDadosDoStorage() {
             dados.fechamentoOps = dadosRecuperados.fechamentoOps || [];
             dados.aberturaPdvs = dadosRecuperados.aberturaPdvs || [];
             dados.fechamentoPdvs = dadosRecuperados.fechamentoPdvs || [];
+            dados.operadoresGeral = dadosRecuperados.operadoresGeral || [];
+            dados.pdvsGeral = dadosRecuperados.pdvsGeral || [];
 
             // Renderiza as listas
             renderizarLista('aberturaOps');
             renderizarLista('fechamentoOps');
             renderizarLista('aberturaPdvs');
             renderizarLista('fechamentoPdvs');
+            renderizarLista('operadoresGeral');
+            renderizarLista('pdvsGeral');
             return true;
         } else {
             // Remove dados expirados
@@ -196,16 +206,22 @@ function limparDados() {
     dados.fechamentoOps = [];
     dados.aberturaPdvs = [];
     dados.fechamentoPdvs = [];
+    dados.operadoresGeral = [];
+    dados.pdvsGeral = [];
     
     document.getElementById('inputAberturaOps').value = '';
     document.getElementById('inputFechamentoOps').value = '';
     document.getElementById('inputAberturaPdvs').value = '';
     document.getElementById('inputFechamentoPdvs').value = '';
+    document.getElementById('inputOperadoresGeral').value = '';
+    document.getElementById('inputPdvsGeral').value = '';
 
     renderizarLista('aberturaOps');
     renderizarLista('fechamentoOps');
     renderizarLista('aberturaPdvs');
     renderizarLista('fechamentoPdvs');
+    renderizarLista('operadoresGeral');
+    renderizarLista('pdvsGeral');
 
     localStorage.removeItem('sorteio_dados');
     exibirFeedback('🗑️ Dados limpos com sucesso!', 'sucesso');
@@ -269,7 +285,15 @@ function gerarDistribuicaoSemRepetir(pdvs, operadores, chaveStorage) {
 }
 
 function sortear() {
-    // Desativa o botão e mostra loading
+    // Validar dados de acordo com o tipo de dia
+    if (tipoDiaAtual === 'util') {
+        sortearDiaUtil();
+    } else {
+        sortearFeriado();
+    }
+}
+
+function sortearDiaUtil() {
     const btnSortear = document.querySelector('.btn-sortear');
     btnSortear.disabled = true;
     document.getElementById('loading').classList.add('ativo');
@@ -278,13 +302,11 @@ function sortear() {
     let tempoRestante = 5;
     const contadorElement = document.getElementById('contador');
 
-    // Atualiza o contador a cada segundo
     const intervalo = setInterval(() => {
         tempoRestante--;
         contadorElement.textContent = tempoRestante;
     }, 1000);
 
-    // Simula o processamento com 5 segundos
     setTimeout(() => {
         clearInterval(intervalo);
 
@@ -322,7 +344,11 @@ function sortear() {
         const dataFormatada = agora.toLocaleString('pt-BR');
         document.getElementById('dataSorteio').textContent = `Sorteado em: ${dataFormatada}`;
 
-        let mensagem = '✅ Sorteio realizado com sucesso!';
+        // Mostrar seção de Dia Útil
+        document.getElementById('resultadoDiaUtil').style.display = 'block';
+        document.getElementById('resultadoFeriado').style.display = 'none';
+
+        let mensagem = '✅ Sorteio (Dia Útil) realizado com sucesso!';
         if (validacao.avisos.length > 0) {
             mensagem += ` ⚠️ ${validacao.avisos.join('; ')}`;
             exibirFeedback(mensagem, 'aviso');
@@ -330,19 +356,98 @@ function sortear() {
             exibirFeedback(mensagem, 'sucesso');
         }
 
-        // Remove loading, mostra resultado e reativa o botão
         document.getElementById('loading').classList.remove('ativo');
         document.getElementById('printArea').classList.add('visivel');
         btnSortear.disabled = false;
         contadorElement.textContent = '5';
     }, 5000);
+}
 
+function sortearFeriado() {
+    const btnSortear = document.querySelector('.btn-sortear');
+    btnSortear.disabled = true;
+    document.getElementById('loading').classList.add('ativo');
+    document.getElementById('printArea').classList.remove('visivel');
+
+    let tempoRestante = 5;
+    const contadorElement = document.getElementById('contador');
+
+    const intervalo = setInterval(() => {
+        tempoRestante--;
+        contadorElement.textContent = tempoRestante;
+    }, 1000);
+
+    setTimeout(() => {
+        clearInterval(intervalo);
+
+        let operadores = dados.operadoresGeral;
+        let pdvs = ordenarPdvsNumericamente([...dados.pdvsGeral]);
+
+        if (operadores.length === 0 || pdvs.length === 0) {
+            exibirFeedback('❌ Preencha Operadores e PDVs antes de sortear!', 'erro');
+            document.getElementById('loading').classList.remove('ativo');
+            btnSortear.disabled = false;
+            contadorElement.textContent = '5';
+            return;
+        }
+
+        if (operadores.length !== pdvs.length) {
+            exibirFeedback('❌ O número de operadores deve ser igual ao número de PDVs!', 'erro');
+            document.getElementById('loading').classList.remove('ativo');
+            btnSortear.disabled = false;
+            contadorElement.textContent = '5';
+            return;
+        }
+
+        const operadoresFinal = gerarDistribuicaoSemRepetir(
+            pdvs,
+            operadores,
+            "ultimoSorteioFeriado"
+        );
+
+        preencherTabela("resultadoGeral", pdvs, operadoresFinal);
+
+        const agora = new Date();
+        const dataFormatada = agora.toLocaleString('pt-BR');
+        document.getElementById('dataSorteio').textContent = `Sorteado em: ${dataFormatada}`;
+
+        // Mostrar seção de Feriado
+        document.getElementById('resultadoDiaUtil').style.display = 'none';
+        document.getElementById('resultadoFeriado').style.display = 'block';
+
+        exibirFeedback('✅ Sorteio (Feriado) realizado com sucesso!', 'sucesso');
+
+        document.getElementById('loading').classList.remove('ativo');
+        document.getElementById('printArea').classList.add('visivel');
+        btnSortear.disabled = false;
+        contadorElement.textContent = '5';
+    }, 5000);
 }
 
 function imprimirResultado() {
     window.print();
 }
 
+
+// ===== ALTERNAR TIPO DE DIA =====
+function alternarTipoDia(tipo) {
+    tipoDiaAtual = tipo;
+    
+    const camposDiaUtil = document.getElementById('camposDiaUtil');
+    const camposFeriado = document.getElementById('camposFeriado');
+    
+    if (tipo === 'util') {
+        camposDiaUtil.style.display = 'block';
+        camposFeriado.style.display = 'none';
+    } else {
+        camposDiaUtil.style.display = 'none';
+        camposFeriado.style.display = 'block';
+    }
+    
+    // Limpar feedback
+    document.getElementById('feedback').className = 'feedback';
+    exibirFeedback(`Modo: ${tipo === 'util' ? '📅 Dia Útil' : '🎉 Feriado'}`, 'sucesso');
+}
 
 // ===== FUNÇÕES DE CONTATO =====
 function abrirContato() {

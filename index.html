@@ -14,41 +14,77 @@
 <div class="container">
     <h1>Sorteio de Operadores</h1>
 
-    <div class="grid">
-        <div class="input-group">
-            <h3>Operadores Abertura</h3>
-            <div class="input-container">
-                <input type="text" id="inputAberturaOps" placeholder="Digite o nome..." onkeypress="adicionarItem(event, 'aberturaOps')">
-                <button class="btn-adicionar" onclick="adicionarItem(null, 'aberturaOps')">➕</button>
-            </div>
-            <div id="listaAberturaOps" class="chips-container"></div>
-        </div>
+    <!-- Seletor Dia Útil / Feriado -->
+    <div class="tipo-dia-selector">
+        <label class="radio-group">
+            <input type="radio" name="tipoDia" value="util" checked onchange="alternarTipoDia('util')">
+            <span class="radio-label">📅 Dia Útil</span>
+        </label>
+        <label class="radio-group">
+            <input type="radio" name="tipoDia" value="feriado" onchange="alternarTipoDia('feriado')">
+            <span class="radio-label">🎉 Domingos & Feriados</span>
+        </label>
+    </div>
 
-        <div class="input-group">
-            <h3>Operadores Fechamento</h3>
-            <div class="input-container">
-                <input type="text" id="inputFechamentoOps" placeholder="Digite o nome..." onkeypress="adicionarItem(event, 'fechamentoOps')">
-                <button class="btn-adicionar" onclick="adicionarItem(null, 'fechamentoOps')">➕</button>
+    <div id="camposDiaUtil" class="campos-container">
+        <div class="grid">
+            <div class="input-group">
+                <h3>Operadores Abertura</h3>
+                <div class="input-container">
+                    <input type="text" id="inputAberturaOps" placeholder="Digite o nome..." onkeypress="adicionarItem(event, 'aberturaOps')">
+                    <button class="btn-adicionar" onclick="adicionarItem(null, 'aberturaOps')">➕</button>
+                </div>
+                <div id="listaAberturaOps" class="chips-container"></div>
             </div>
-            <div id="listaFechamentoOps" class="chips-container"></div>
-        </div>
 
-        <div class="input-group">
-            <h3>PDVs Abertura</h3>
-            <div class="input-container">
-                <input type="text" id="inputAberturaPdvs" placeholder="Digite o PDV..." onkeypress="adicionarItem(event, 'aberturaPdvs')">
-                <button class="btn-adicionar" onclick="adicionarItem(null, 'aberturaPdvs')">➕</button>
+            <div class="input-group">
+                <h3>Operadores Fechamento</h3>
+                <div class="input-container">
+                    <input type="text" id="inputFechamentoOps" placeholder="Digite o nome..." onkeypress="adicionarItem(event, 'fechamentoOps')">
+                    <button class="btn-adicionar" onclick="adicionarItem(null, 'fechamentoOps')">➕</button>
+                </div>
+                <div id="listaFechamentoOps" class="chips-container"></div>
             </div>
-            <div id="listaAberturaPdvs" class="chips-container"></div>
-        </div>
 
-        <div class="input-group">
-            <h3>PDVs Fechamento</h3>
-            <div class="input-container">
-                <input type="text" id="inputFechamentoPdvs" placeholder="Digite o PDV..." onkeypress="adicionarItem(event, 'fechamentoPdvs')">
-                <button class="btn-adicionar" onclick="adicionarItem(null, 'fechamentoPdvs')">➕</button>
+            <div class="input-group">
+                <h3>PDVs Abertura</h3>
+                <div class="input-container">
+                    <input type="text" id="inputAberturaPdvs" placeholder="Digite o PDV..." onkeypress="adicionarItem(event, 'aberturaPdvs')">
+                    <button class="btn-adicionar" onclick="adicionarItem(null, 'aberturaPdvs')">➕</button>
+                </div>
+                <div id="listaAberturaPdvs" class="chips-container"></div>
             </div>
-            <div id="listaFechamentoPdvs" class="chips-container"></div>
+
+            <div class="input-group">
+                <h3>PDVs Fechamento</h3>
+                <div class="input-container">
+                    <input type="text" id="inputFechamentoPdvs" placeholder="Digite o PDV..." onkeypress="adicionarItem(event, 'fechamentoPdvs')">
+                    <button class="btn-adicionar" onclick="adicionarItem(null, 'fechamentoPdvs')">➕</button>
+                </div>
+                <div id="listaFechamentoPdvs" class="chips-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="camposFeriado" class="campos-container" style="display: none;">
+        <div class="grid">
+            <div class="input-group">
+                <h3>Operadores (Geral)</h3>
+                <div class="input-container">
+                    <input type="text" id="inputOperadoresGeral" placeholder="Digite o nome..." onkeypress="adicionarItem(event, 'operadoresGeral')">
+                    <button class="btn-adicionar" onclick="adicionarItem(null, 'operadoresGeral')">➕</button>
+                </div>
+                <div id="listaOperadoresGeral" class="chips-container"></div>
+            </div>
+
+            <div class="input-group">
+                <h3>PDVs (Geral)</h3>
+                <div class="input-container">
+                    <input type="text" id="inputPdvsGeral" placeholder="Digite o PDV..." onkeypress="adicionarItem(event, 'pdvsGeral')">
+                    <button class="btn-adicionar" onclick="adicionarItem(null, 'pdvsGeral')">➕</button>
+                </div>
+                <div id="listaPdvsGeral" class="chips-container"></div>
+            </div>
         </div>
     </div>
 
@@ -78,27 +114,42 @@
         <h2>Resultado do Sorteio</h2>
         <div id="dataSorteio" class="info-sorteio"></div>
 
-        <h3>Abertura</h3>
-        <table id="resultadoAbertura">
-            <thead>
-                <tr>
-                    <th>PDV</th>
-                    <th>Operador</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div id="resultadoDiaUtil" style="display: none;">
+            <h3>Abertura</h3>
+            <table id="resultadoAbertura">
+                <thead>
+                    <tr>
+                        <th>PDV</th>
+                        <th>Operador</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
 
-        <h3>Fechamento</h3>
-        <table id="resultadoFechamento">
-            <thead>
-                <tr>
-                    <th>PDV</th>
-                    <th>Operador</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+            <h3>Fechamento</h3>
+            <table id="resultadoFechamento">
+                <thead>
+                    <tr>
+                        <th>PDV</th>
+                        <th>Operador</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="resultadoFeriado" style="display: none;">
+            <h3>Sorteio (Geral)</h3>
+            <table id="resultadoGeral">
+                <thead>
+                    <tr>
+                        <th>PDV</th>
+                        <th>Operador</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
     <footer class="footer">
