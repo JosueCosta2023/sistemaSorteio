@@ -1,0 +1,354 @@
+function exibirFeedback(mensagem, tipo = 'sucesso') {
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = mensagem;
+    feedback.className = `feedback ${tipo}`;
+    
+    if (tipo === 'sucesso') {
+        setTimeout(() => {
+            feedback.classList.remove(tipo);
+        }, 5000);
+    }
+}
+
+// Listas de dados
+const dados = {
+    aberturaOps: [],
+    fechamentoOps: [],
+    aberturaPdvs: [],
+    fechamentoPdvs: []
+};
+
+console.log('🟢 Script.js carregado! Objeto dados inicializado:', dados);
+console.log('Tipo de dados:', typeof dados);
+console.log('dados.aberturaOps é array?', Array.isArray(dados.aberturaOps));
+
+function adicionarItem(event, tipo) {
+    console.log('=== adicionarItem chamado ===');
+    console.log('Evento:', event);
+    console.log('Tipo:', tipo);
+    console.log('Objeto dados no momento:', dados);
+    console.log('dados[tipo]:', dados[tipo]);
+    console.log('typeof dados[tipo]:', typeof dados[tipo]);
+    
+    // Se foi pressionada uma tecla (event.key), verifica se é Enter
+    if (event && event.key && event.key !== 'Enter') {
+        console.log('Tecla não é Enter, retornando');
+        return;
+    }
+    if (event && event.preventDefault) event.preventDefault();
+
+    // Mapear os tipos para os IDs corretos
+    const mapaTipos = {
+        'aberturaOps': 'inputAberturaOps',
+        'fechamentoOps': 'inputFechamentoOps',
+        'aberturaPdvs': 'inputAberturaPdvs',
+        'fechamentoPdvs': 'inputFechamentoPdvs'
+    };
+
+    const inputId = mapaTipos[tipo];
+    console.log('Procurando input com ID:', inputId);
+    
+    const input = document.getElementById(inputId);
+    console.log('Input encontrado:', input);
+    
+    if (!input) {
+        console.error(`❌ Input não encontrado com ID: ${inputId}`);
+        alert(`❌ Input não encontrado com ID: ${inputId}`);
+        return;
+    }
+    
+    const valor = input.value.trim();
+    console.log('Valor digitado:', valor);
+
+    if (!valor) {
+        console.warn('Valor vazio');
+        exibirFeedback('⚠️ Digite um valor antes de adicionar!', 'aviso');
+        return;
+    }
+
+    // Verificar se dados[tipo] é um array
+    if (!Array.isArray(dados[tipo])) {
+        console.error('ERRO: dados[tipo] não é um array!', dados[tipo]);
+        // Força a criação como array
+        dados[tipo] = [];
+    }
+
+    console.log('Adicionando item:', valor, 'ao tipo:', tipo);
+    
+    // Adiciona à lista
+    dados[tipo].push(valor);
+    console.log('Dados após adicionar:', dados);
+    
+    input.value = '';
+    input.focus();
+
+    // Atualiza a visualização
+    console.log('Renderizando lista...');
+    renderizarLista(tipo);
+    salvarDadosNoStorage();
+    exibirFeedback('✅ Item adicionado!', 'sucesso');
+    console.log('=== Fim adicionarItem ===');
+}
+
+function removerItem(tipo, index) {
+    dados[tipo].splice(index, 1);
+    renderizarLista(tipo);
+    salvarDadosNoStorage();
+}
+
+function renderizarLista(tipo) {
+    const listId = `lista${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`;
+    const listElement = document.getElementById(listId);
+    
+    console.log('Renderizando lista:', listId);
+    
+    listElement.innerHTML = '';
+
+    dados[tipo].forEach((item, index) => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.innerHTML = `
+            <p class="chip-text">${item}</p>
+            <button class="chip-remove" onclick="removerItem('${tipo}', ${index})" title="Remover">🗑️</button>
+        `;
+        listElement.appendChild(chip);
+    });
+}
+
+function validarListas(aberturaOps, fechamentoOps, aberturaPdvs, fechamentoPdvs) {
+    let erros = [];
+    let avisos = [];
+
+    if (aberturaOps.length === 0 || fechamentoOps.length === 0) {
+        erros.push('Lista de operadores não pode estar vazia');
+    }
+    if (aberturaPdvs.length === 0 || fechamentoPdvs.length === 0) {
+        erros.push('Lista de PDVs não pode estar vazia');
+    }
+
+    if (aberturaOps.length !== aberturaPdvs.length) {
+        avisos.push(`Abertura: ${aberturaOps.length} operador(es) vs ${aberturaPdvs.length} PDV(s)`);
+    }
+    if (fechamentoOps.length !== fechamentoPdvs.length) {
+        avisos.push(`Fechamento: ${fechamentoOps.length} operador(es) vs ${fechamentoPdvs.length} PDV(s)`);
+    }
+
+    return { erros, avisos };
+}
+
+function embaralhar(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function ordenarPdvsNumericamente(pdvs) {
+    // Extrai números dos PDVs e ordena numericamente
+    return pdvs.sort((a, b) => {
+        const numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
+        const numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
+        return numA - numB;
+    });
+}
+
+function salvarDadosNoStorage() {
+    const dadosComTimestamp = {
+        ...dados,
+        timestamp: Date.now()
+    };
+    localStorage.setItem('sorteio_dados', JSON.stringify(dadosComTimestamp));
+}
+
+function restaurarDadosDoStorage() {
+    const dadosArmazenados = localStorage.getItem('sorteio_dados');
+    
+    if (dadosArmazenados) {
+        const dadosRecuperados = JSON.parse(dadosArmazenados);
+        const agora = Date.now();
+        const umaHora = 3600000; // 1 hora em milissegundos
+        
+        // Verifica se os dados ainda estão válidos (1 hora)
+        if (agora - dadosRecuperados.timestamp < umaHora) {
+            dados.aberturaOps = dadosRecuperados.aberturaOps || [];
+            dados.fechamentoOps = dadosRecuperados.fechamentoOps || [];
+            dados.aberturaPdvs = dadosRecuperados.aberturaPdvs || [];
+            dados.fechamentoPdvs = dadosRecuperados.fechamentoPdvs || [];
+
+            // Renderiza as listas
+            renderizarLista('aberturaOps');
+            renderizarLista('fechamentoOps');
+            renderizarLista('aberturaPdvs');
+            renderizarLista('fechamentoPdvs');
+            return true;
+        } else {
+            // Remove dados expirados
+            localStorage.removeItem('sorteio_dados');
+            return false;
+        }
+    }
+    return false;
+}
+
+function limparDados() {
+    dados.aberturaOps = [];
+    dados.fechamentoOps = [];
+    dados.aberturaPdvs = [];
+    dados.fechamentoPdvs = [];
+    
+    document.getElementById('inputAberturaOps').value = '';
+    document.getElementById('inputFechamentoOps').value = '';
+    document.getElementById('inputAberturaPdvs').value = '';
+    document.getElementById('inputFechamentoPdvs').value = '';
+
+    renderizarLista('aberturaOps');
+    renderizarLista('fechamentoOps');
+    renderizarLista('aberturaPdvs');
+    renderizarLista('fechamentoPdvs');
+
+    localStorage.removeItem('sorteio_dados');
+    exibirFeedback('🗑️ Dados limpos com sucesso!', 'sucesso');
+}
+
+function preencherTabela(tabelaId, pdvs, operadores) {
+    const tbody = document.querySelector(`#${tabelaId} tbody`);
+    tbody.innerHTML = "";
+
+    for (let i = 0; i < pdvs.length; i++) {
+        const tr = document.createElement("tr");
+
+        const tdPdv = document.createElement("td");
+        tdPdv.textContent = pdvs[i] || "-";
+
+        const tdOp = document.createElement("td");
+        tdOp.textContent = operadores[i] || "SEM OPERADOR";
+
+        tr.appendChild(tdPdv);
+        tr.appendChild(tdOp);
+        tbody.appendChild(tr);
+    }
+}
+
+function gerarDistribuicaoSemRepetir(pdvs, operadores, chaveStorage) {
+    let tentativa = 0;
+    const maxTentativas = 200;
+
+    const anterior = JSON.parse(localStorage.getItem(chaveStorage) || "{}");
+
+    while (tentativa < maxTentativas) {
+        tentativa++;
+
+        let opsEmbaralhados = embaralhar([...operadores]);
+        let valido = true;
+
+        for (let i = 0; i < pdvs.length; i++) {
+            const pdv = pdvs[i];
+            const op = opsEmbaralhados[i];
+
+            if (anterior[pdv] && anterior[pdv] === op) {
+                valido = false;
+                break;
+            }
+        }
+
+        if (valido) {
+            const novoRegistro = {};
+            for (let i = 0; i < pdvs.length; i++) {
+                novoRegistro[pdvs[i]] = opsEmbaralhados[i] || null;
+            }
+
+            localStorage.setItem(chaveStorage, JSON.stringify(novoRegistro));
+            return opsEmbaralhados;
+        }
+
+    }
+
+    alert("Não foi possível evitar repetição com a lista atual. Resultado normal será usado.");
+    return embaralhar([...operadores]);
+}
+
+function sortear() {
+    // Desativa o botão e mostra loading
+    const btnSortear = document.querySelector('.btn-sortear');
+    btnSortear.disabled = true;
+    document.getElementById('loading').classList.add('ativo');
+    document.getElementById('printArea').classList.remove('visivel');
+
+    let tempoRestante = 5;
+    const contadorElement = document.getElementById('contador');
+
+    // Atualiza o contador a cada segundo
+    const intervalo = setInterval(() => {
+        tempoRestante--;
+        contadorElement.textContent = tempoRestante;
+    }, 1000);
+
+    // Simula o processamento com 5 segundos
+    setTimeout(() => {
+        clearInterval(intervalo);
+
+        let aberturaOps = dados.aberturaOps;
+        let fechamentoOps = dados.fechamentoOps;
+        let aberturaPdvs = ordenarPdvsNumericamente([...dados.aberturaPdvs]);
+        let fechamentoPdvs = ordenarPdvsNumericamente([...dados.fechamentoPdvs]);
+
+        const validacao = validarListas(aberturaOps, fechamentoOps, aberturaPdvs, fechamentoPdvs);
+
+        if (validacao.erros.length > 0) {
+            exibirFeedback('❌ ' + validacao.erros.join('; '), 'erro');
+            document.getElementById('loading').classList.remove('ativo');
+            btnSortear.disabled = false;
+            contadorElement.textContent = '5';
+            return;
+        }
+
+        const aberturaFinal = gerarDistribuicaoSemRepetir(
+            aberturaPdvs,
+            aberturaOps,
+            "ultimoSorteioAbertura"
+        );
+
+        const fechamentoFinal = gerarDistribuicaoSemRepetir(
+            fechamentoPdvs,
+            fechamentoOps,
+            "ultimoSorteioFechamento"
+        );
+
+        preencherTabela("resultadoAbertura", aberturaPdvs, aberturaFinal);
+        preencherTabela("resultadoFechamento", fechamentoPdvs, fechamentoFinal);
+
+        const agora = new Date();
+        const dataFormatada = agora.toLocaleString('pt-BR');
+        document.getElementById('dataSorteio').textContent = `Sorteado em: ${dataFormatada}`;
+
+        let mensagem = '✅ Sorteio realizado com sucesso!';
+        if (validacao.avisos.length > 0) {
+            mensagem += ` ⚠️ ${validacao.avisos.join('; ')}`;
+            exibirFeedback(mensagem, 'aviso');
+        } else {
+            exibirFeedback(mensagem, 'sucesso');
+        }
+
+        // Remove loading, mostra resultado e reativa o botão
+        document.getElementById('loading').classList.remove('ativo');
+        document.getElementById('printArea').classList.add('visivel');
+        btnSortear.disabled = false;
+        contadorElement.textContent = '5';
+    }, 5000);
+
+}
+
+function imprimirResultado() {
+    window.print();
+}
+
+
+// Restaura dados ao carregar a página
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('Página carregada, restaurando dados...');
+    const dadosRestaurados = restaurarDadosDoStorage();
+    if (dadosRestaurados) {
+        exibirFeedback('📂 Dados recuperados do armazenamento (válido por 1 hora)', 'sucesso');
+    }
+});
