@@ -23,10 +23,6 @@ const dados = {
 let tipoDiaAtual = 'util'; // 'util' ou 'feriado'
 let temSorteioRealizado = false; // Controla se há dados sorteados
 
-console.log('🟢 Script.js carregado! Objeto dados inicializado:', dados);
-console.log('Tipo de dados:', typeof dados);
-console.log('dados.aberturaOps é array?', Array.isArray(dados.aberturaOps));
-
 function adicionarItem(event, tipo) {
     console.log('=== adicionarItem chamado ===');
     console.log('Evento:', event);
@@ -523,7 +519,6 @@ function fecharContatoAoClicarFora() {
 
 // Restaura dados ao carregar a página
 window.addEventListener('DOMContentLoaded', () => {
-    console.log('Página carregada, restaurando dados...');
     desabilitarBotaoImprimir(); // Desabilita o botão por padrão
     atualizarVisibilidadeBotaoLimpar(); // Verifica visibilidade do botão limpar
     const dadosRestaurados = restaurarDadosDoStorage();

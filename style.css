@@ -62,9 +62,9 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* #printArea > h3{
-            margin-top: 20px;
-        } */
+        #printArea > h3{
+            margin-top: 40px;
+        }
         
         h3 > span{
             font-style: italic;
@@ -653,21 +653,21 @@
             #printArea h2 {
                 page-break-after: avoid;
                 page-break-inside: avoid;
-                margin: 0 0 4px 0;
+                margin: 0 0 8px 0;
                 padding: 0;
-                font-size: 16px;
+                font-size: 20px;
                 font-weight: bold;
-                line-height: 1.2;
+                line-height: 1.4;
             }
 
             #printArea h3 {
                 page-break-after: avoid;
                 page-break-inside: avoid;
-                margin: 4px 0 2px 0;
+                margin: 8px 0 4px 0;
                 padding: 0;
-                font-size: 14px;
+                font-size: 16px;
                 font-weight: bold;
-                line-height: 1.2;
+                line-height: 1.4;
             }
 
             table {
@@ -676,9 +676,12 @@
                 border-collapse: collapse;
                 margin: 0;
                 padding: 0;
-                font-size: 12px;
+                font-size: 14px;
                 table-layout: fixed;
-                margin-bottom: 6px;
+                margin-bottom: 12px;
+                border-radius: 12px;
+                overflow: hidden;
+                border: 2px solid #2563eb;
             }
 
             thead {
@@ -698,28 +701,28 @@
             }
 
             th, td {
-                border: 1px solid #000;
-                padding: 3px 2px;
+                border: 1px solid #2563eb;
+                padding: 8px 6px;
                 text-align: center;
-                font-size: 11px;
-                line-height: 1.1;
+                font-size: 13px;
+                line-height: 1.5;
                 word-wrap: break-word;
                 overflow-wrap: break-word;
                 margin: 0;
             }
 
             th {
-                background: #2563eb;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white;
-                padding: 3px 2px;
+                padding: 8px 6px;
             }
 
             .info-sorteio {
                 page-break-after: avoid;
-                font-size: 10px;
-                margin: 0 0 2px 0;
+                font-size: 12px;
+                margin: 0 0 8px 0;
                 padding: 0;
-                line-height: 1.2;
+                line-height: 1.5;
             }
 
             #feedback, .grid, button, .input-container, .input-group, footer.footer, .btn-contato-flutuante, .modal-contato {
