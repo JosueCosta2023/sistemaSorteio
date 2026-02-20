@@ -150,6 +150,29 @@ sistemaSorteio/
 
 ---
 
+
+### Imagens Demonstrativos
+
+### Tela Inicial
+
+![Tela](/imagens/telainicial.png)
+
+### Tela Inicial preenchida com dados
+ "O botao LIMPAR DADOS fica disponivel quando o usuario inicial o preenchimento dos formularios pois o sistema esta configurado para armazenar em localStorage qualquer informação escritas nos inputs."
+
+![Tela](/imagens/uso01.png)
+
+
+### Tela Sorteando
+
+![Tela](/imagens/sorteando.png)
+
+### Tela Resultado
+"O botao de IMPRIMIR ficara disponivel somente quando houver resultados de sorteio."
+
+![Tela](/imagens/resultado.png)
+
+
 ## 📱 Contato
 
 ### Links Profissionais
