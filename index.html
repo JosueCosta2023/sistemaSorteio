@@ -110,7 +110,6 @@
 
     <div class="btns-group">
         <button class="btn-sortear" onclick="sortear()"><i class="fa-solid fa-dice"></i>  Sortear</button>
-        <button class="btn-print" onclick="imprimirResultado()"> <i class="fa-solid fa-print"></i> Imprimir</button>
         <button class="btn-limpar" onclick="limparDados()"><i class="fa-solid fa-trash"></i> Limpar Dados</button>
     </div>
 
@@ -154,6 +153,17 @@
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+
+        <div id="secaoObservacoes" class="observacoes-section" style="display: none;">
+            <h3>📝 Observações</h3>
+            <div class="observacoes-container">
+                <textarea id="campoObservacoes" placeholder="Digite aqui alguma observação sobre este sorteio..." maxlength="500"></textarea>
+                <div class="observacoes-info">
+                    <span id="contadorCaracteres">0/500</span>
+                </div>
+                <button class="btn-salvar-obs" onclick="imprimirResultado()"><i class="fa-solid fa-print"></i> Imprimir Resultado</button>
+            </div>
         </div>
     </div>
 

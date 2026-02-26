@@ -267,17 +267,6 @@
 
         .btn-sortear { background: #2563eb; color: white; transition: 0.2s; }
         .btn-sortear:hover { background: #1d4ed8; }
-        .btn-print { background: #16a34a; color: white; transition: 0.2s; }
-        .btn-print:hover { background: #15803d; }
-        .btn-print:disabled {
-            background: #9ca3af;
-            color: #e5e7eb;
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-        .btn-print:disabled:hover {
-            background: #9ca3af;
-        }
         .btn-limpar { background: #dc2626; color: white; transition: 0.2s; display: none; }
         .btn-limpar:hover { background: #b91c1c; }
         .btn-print-resultado { background: #9333ea; color: white; }
@@ -603,6 +592,89 @@
             box-shadow: 0 8px 20px rgba(10, 102, 194, 0.3);
         }
 
+        /* ===== SEÇÃO DE OBSERVAÇÕES ===== */
+        .observacoes-section {
+            background: #f0f9ff;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .observacoes-section h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .observacoes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        #campoObservacoes {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        #campoObservacoes:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+
+        #campoObservacoes::placeholder {
+            color: #999;
+        }
+
+        .observacoes-info {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .btn-salvar-obs {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: fit-content;
+        }
+
+        .btn-salvar-obs:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-salvar-obs:active {
+            transform: translateY(0);
+        }
+
+        .btn-salvar-obs i {
+            font-size: 14px;
+        }
+
         @media print {
             * {
                 margin: 0;
@@ -723,6 +795,42 @@
                 margin: 0 0 8px 0;
                 padding: 0;
                 line-height: 1.5;
+            }
+
+            .observacoes-section {
+                display: none !important;
+                page-break-inside: avoid;
+                background: white;
+                border: 2px solid #333;
+                margin: 20px 0 0 0;
+                padding: 12px;
+            }
+
+            .observacoes-section.com-observacao {
+                display: block !important;
+            }
+
+            .observacoes-section h3 {
+                font-size: 14px;
+                margin: 0 0 8px 0;
+                page-break-after: avoid;
+            }
+
+            #campoObservacoes {
+                display: block;
+                width: 100%;
+                border: none;
+                padding: 0;
+                margin: 0;
+                font-size: 12px;
+                line-height: 1.5;
+                min-height: auto;
+                max-height: none;
+                resize: none;
+            }
+
+            .observacoes-info, .btn-salvar-obs {
+                display: none !important;
             }
 
             #feedback, .grid, button, .input-container, .input-group, footer.footer, .btn-contato-flutuante, .modal-contato {

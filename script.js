@@ -222,7 +222,9 @@ function limparDados() {
     renderizarLista('pdvsGeral');
 
     localStorage.removeItem('sorteio_dados');
+    limparObservacao();
     desabilitarBotaoImprimir();
+    ocultarSecaoObservacoes();
     exibirFeedback('🗑️ Dados limpos com sucesso! Recarregando página...', 'sucesso');
     
     // Recarrega a página após 1.5 segundos
@@ -363,6 +365,16 @@ function sortearDiaUtil() {
         document.getElementById('loading').classList.remove('ativo');
         document.getElementById('printArea').classList.add('visivel');
         habilitarBotaoImprimir();
+        mostrarSecaoObservacoes();
+        
+        document.getElementById('loading').classList.remove('ativo');
+        document.getElementById('printArea').classList.add('visivel');
+        habilitarBotaoImprimir();
+        mostrarSecaoObservacoes();
+        
+        // Scroll suave para os resultados
+        document.getElementById('printArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
         btnSortear.disabled = false;
         contadorElement.textContent = '5';
     }, 5000);
@@ -370,9 +382,6 @@ function sortearDiaUtil() {
 
 function sortearFeriado() {
     const btnSortear = document.querySelector('.btn-sortear');
-    btnSortear.disabled = true;
-    document.getElementById('loading').classList.add('ativo');
-    document.getElementById('printArea').classList.remove('visivel');
 
     let tempoRestante = 5;
     const contadorElement = document.getElementById('contador');
@@ -425,6 +434,11 @@ function sortearFeriado() {
         document.getElementById('loading').classList.remove('ativo');
         document.getElementById('printArea').classList.add('visivel');
         habilitarBotaoImprimir();
+        mostrarSecaoObservacoes();
+        
+        // Scroll suave para os resultados
+        document.getElementById('printArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
         btnSortear.disabled = false;
         contadorElement.textContent = '5';
     }, 5000);
@@ -435,25 +449,33 @@ function imprimirResultado() {
         exibirFeedback('❌ Realize um sorteio antes de imprimir!', 'erro');
         return;
     }
-    window.print();
+    
+    const campoObs = document.getElementById('campoObservacoes');
+    const secaoObs = document.getElementById('secaoObservacoes');
+    const temObservacao = campoObs && campoObs.value.trim() !== '';
+    
+    // Remover a classe primeiro para garantir estado limpo
+    secaoObs.classList.remove('com-observacao');
+    
+    // Adicionar classe apenas se houver conteúdo
+    if (temObservacao) {
+        secaoObs.classList.add('com-observacao');
+    }
+    
+    // Pequeno delay para garantir que o DOM foi atualizado
+    setTimeout(() => {
+        window.print();
+    }, 50);
 }
 
 
 // ===== CONTROLAR BOTÃO DE IMPRESSÃO =====
 function habilitarBotaoImprimir() {
     temSorteioRealizado = true;
-    const btnPrint = document.querySelector('.btn-print');
-    btnPrint.disabled = false;
-    btnPrint.style.opacity = '1';
-    btnPrint.style.cursor = 'pointer';
 }
 
 function desabilitarBotaoImprimir() {
     temSorteioRealizado = false;
-    const btnPrint = document.querySelector('.btn-print');
-    btnPrint.disabled = true;
-    btnPrint.style.opacity = '0.5';
-    btnPrint.style.cursor = 'not-allowed';
 }
 
 // ===== CONTROLAR VISIBILIDADE BOTÃO LIMPAR =====
@@ -517,6 +539,64 @@ function fecharContatoAoClicarFora() {
     }
 }
 
+// ===== FUNÇÕES DE OBSERVAÇÕES =====
+function mostrarSecaoObservacoes() {
+    const secao = document.getElementById('secaoObservacoes');
+    secao.style.display = 'block';
+    restaurarObservacao();
+}
+
+function ocultarSecaoObservacoes() {
+    const secao = document.getElementById('secaoObservacoes');
+    secao.style.display = 'none';
+}
+
+function salvarObservacao() {
+    const campoObs = document.getElementById('campoObservacoes');
+    const observacao = campoObs.value.trim();
+    
+    if (observacao === '') {
+        exibirFeedback('⚠️ Digite uma observação antes de salvar!', 'aviso');
+        return;
+    }
+
+    const dadosObs = {
+        observacao: observacao,
+        timestamp: Date.now()
+    };
+
+    localStorage.setItem('sorteio_observacao', JSON.stringify(dadosObs));
+    exibirFeedback('✅ Observação salva com sucesso!', 'sucesso');
+}
+
+function restaurarObservacao() {
+    const dadosObs = localStorage.getItem('sorteio_observacao');
+    const campoObs = document.getElementById('campoObservacoes');
+    
+    if (dadosObs) {
+        const obs = JSON.parse(dadosObs);
+        campoObs.value = obs.observacao;
+        atualizarContadorCaracteres();
+    } else {
+        campoObs.value = '';
+        atualizarContadorCaracteres();
+    }
+}
+
+function atualizarContadorCaracteres() {
+    const campoObs = document.getElementById('campoObservacoes');
+    const contador = document.getElementById('contadorCaracteres');
+    const tamanho = campoObs.value.length;
+    contador.textContent = `${tamanho}/500`;
+}
+
+function limparObservacao() {
+    const campoObs = document.getElementById('campoObservacoes');
+    campoObs.value = '';
+    atualizarContadorCaracteres();
+    localStorage.removeItem('sorteio_observacao');
+}
+
 // Restaura dados ao carregar a página
 window.addEventListener('DOMContentLoaded', () => {
     desabilitarBotaoImprimir(); // Desabilita o botão por padrão
@@ -527,4 +607,10 @@ window.addEventListener('DOMContentLoaded', () => {
         atualizarVisibilidadeBotaoLimpar(); // Mostra o botão se houver dados
     }
     fecharContatoAoClicarFora();
+    
+    // Adicionar evento ao campo de observações para contar caracteres
+    const campoObs = document.getElementById('campoObservacoes');
+    if (campoObs) {
+        campoObs.addEventListener('input', atualizarContadorCaracteres);
+    }
 });
