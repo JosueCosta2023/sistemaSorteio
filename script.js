@@ -367,11 +367,6 @@ function sortearDiaUtil() {
         habilitarBotaoImprimir();
         mostrarSecaoObservacoes();
         
-        document.getElementById('loading').classList.remove('ativo');
-        document.getElementById('printArea').classList.add('visivel');
-        habilitarBotaoImprimir();
-        mostrarSecaoObservacoes();
-        
         // Scroll suave para os resultados
         document.getElementById('printArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
         
