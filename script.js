@@ -382,6 +382,9 @@ function sortearDiaUtil() {
 
 function sortearFeriado() {
     const btnSortear = document.querySelector('.btn-sortear');
+    btnSortear.disabled = true;
+    document.getElementById('loading').classList.add('ativo');
+    document.getElementById('printArea').classList.remove('visivel');
 
     let tempoRestante = 5;
     const contadorElement = document.getElementById('contador');
