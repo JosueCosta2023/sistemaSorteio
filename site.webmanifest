@@ -1,0 +1,76 @@
+{
+  "name": "Sorteio de Operadores PDV",
+  "short_name": "Sorteio PDV",
+  "description": "Sistema automático de sorteio de operadores para PDVs de supermercados",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#670eea",
+  "background_color": "#ffffff",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-small.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    },
+    {
+      "src": "/screenshot-large.png",
+      "sizes": "1080x1440",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Sorteio Dia Útil",
+      "short_name": "Dia Útil",
+      "description": "Inicia sorteio de dia útil",
+      "url": "/?tipo=util",
+      "icons": [
+        {
+          "src": "/shortcut-util.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Sorteio Feriado",
+      "short_name": "Feriado",
+      "description": "Inicia sorteio de feriado",
+      "url": "/?tipo=feriado",
+      "icons": [
+        {
+          "src": "/shortcut-feriado.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

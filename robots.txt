@@ -1,0 +1,14 @@
+# Arquivo robots.txt para SEO
+# Atualize o Sitemap URL conforme necessário
+
+User-agent: *
+Allow: /
+Disallow: /old/
+Disallow: /documentação/
+Disallow: /imagens/
+
+# Delay entre requisições (em segundos)
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://seu-dominio.com/sitemap.xml
